@@ -69,6 +69,9 @@
     <p class="font-1 font-size-2 score">Score:</p>
     <img class="matt" src="matt-transparent.png"/>
   </div>
+  <div id="lose" hidden>
+    <h1 class="font-1 text-center padding-top-50 font-size-4 zero-margin">You lose</h1>
+  </div>
   <audio src="cat.mp3"></audio>
   <script>
     const isBetween = (num1,num2,value) => value > num1 && value < num2 
@@ -89,12 +92,24 @@
       }
     }
     function lose(){
-      document.querySelector("#game").setAttribute("hidden", true);
+      let game = document.querySelector("#game");
+      game.remove();
+      document.querySelector("#lose").removeAttribute("hidden")
+      
     }
     function update(){
       let pos = document.querySelector("#game").getBoundingClientRect();
       let matt = document.querySelector(".matt");
       let mattpos = matt.getBoundingClientRect();
+      for(let item of document.querySelectorAll(".ian")){
+        let matt1 = document.querySelector(".matt");
+        let mattLeft = Number(matt1.style.left.slice(0,-2));
+        let ianLeft = Number(item.style.left.slice(0,-2));
+        let ianheight = Number(item.style.top.slice(0,-2));
+        if(isBetween(mattLeft-50, mattLeft+50, ianLeft) && ianheight + 400 > pos.height){
+          lose();
+        }
+      }
       if(direction === 'left'){
         matt.style.transform = "scaleX(1)";
         if(mattpos.left > 0) matt.style.left = mattpos.left - 10 + "px";
@@ -114,6 +129,7 @@
           createEnemy(score)
         }
       }
+      
       document.querySelector(".score").innerHTML = "Score: "+ score;
       return;
     }
